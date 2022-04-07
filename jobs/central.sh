@@ -1,1 +1,1 @@
-echo "CENTRAL deployment"
+echo "CENTRAL deployment" >> /tmp/ckp

@@ -1,1 +1,1 @@
-echo "OZEA deployment"
+echo "OZEA deployment" >> /tmp/ckp
