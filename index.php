@@ -82,7 +82,7 @@
 
             <div class="row">
 
-                <?php if (!$alreadyInIndex) { ?>
+                <?php if ($alreadyInIndex) { ?>
                     <div class="col-lg-12">
                         <div class="alert alert-danger">
                             <strong>This push is already planned !</strong>
