@@ -1,7 +1,7 @@
 <?php
 
 if (!file_exists('config.php')) {
-    die('You\'ve to copy config.php.dist into config.php');
+    die('You\'ve to copy config.php.dist into config.php or execute make init');
 }
 
 include_once 'constants.php';
