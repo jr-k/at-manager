@@ -7,6 +7,7 @@
     $jobsIndex = [];
     $jobsRows = $jsonDb->select('*')->from(DB_TABLE_JOB)->order_by('date')->get();
     $errors = [];
+    $successes = [];
 
     if (isset($_GET['error'])) {
         if ($_GET['error'] === 'bad_password') {
@@ -90,10 +91,7 @@
             $jsonDb->insert(DB_TABLE_JOB, $newJob);
             $jobsRows[] = $newJob;
             $jobsIndex[jKey($newJob)] = $newJob;
-        }
-
-        if (empty($errors)) {
-            Header('Location:index.php');
+            $successes[] = sprintf('A push for %s has been successfully planned !', $job);
         }
     }
 
@@ -131,7 +129,7 @@
             <h1><strong><?php echo C_APP_TITLE; ?></strong></h1>
             <br />
 
-            <div class="row jumbotron">
+            <div class="row jumbotron" style="padding: 20px;">
 
                 <?php if (!empty($errors)) { ?>
                     <div class="col-lg-12">
@@ -139,6 +137,18 @@
                             <ul>
                                 <?php foreach($errors as $error) { ?>
                                     <li><strong><?php echo $error; ?></strong></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                <?php } ?>
+
+                <?php if (!empty($successes)) { ?>
+                    <div class="col-lg-12">
+                        <div class="alert alert-success">
+                            <ul>
+                                <?php foreach($successes as $success) { ?>
+                                    <li><strong><?php echo $success; ?></strong></li>
                                 <?php } ?>
                             </ul>
                         </div>
