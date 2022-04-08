@@ -1,0 +1,5 @@
+.btn-no-interact:hover,
+.btn-no-interact:active,
+.btn-no-interact:focus {
+    background-position: 0;
+}

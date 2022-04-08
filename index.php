@@ -112,6 +112,7 @@
         <link href="css/jquery-ui.min.css" rel="stylesheet" />
         <link href="css/jquery.timepicker.min.css" rel="stylesheet" />
         <link href="css/fontawesome.all.min.css" rel="stylesheet" />
+        <link href="css/app.css" rel="stylesheet" />
     </head>
     <body>
         <?php
@@ -275,7 +276,7 @@
                             <?php echo isset($row['comment']) ? $row['comment'] : 'N/A'; ?>
                         </td>
                         <td>
-                            <div class="btn btn-primary bold">
+                            <div class="btn btn-primary bold btn-no-interact" style="cursor: default;">
                                 <strong>
                                     <i class="fa fa-clock"></i>
                                     <?php echo isset($row['date']) ? $row['date'].' '.(isset($row['time']) ? $row['time'] : '') : 'N/A'; ?>
