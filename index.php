@@ -107,6 +107,7 @@
         <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
         <link href="css/jquery-ui.min.css" rel="stylesheet" />
         <link href="css/jquery.timepicker.min.css" rel="stylesheet" />
+        <link href="css/fontawesome.all.min.css" rel="stylesheet" />
     </head>
     <body>
         <?php
@@ -206,7 +207,7 @@
                     <?php } ?>
 
                     <button type="submit" class="btn btn-success" style="margin-top:24px;margin-left:24px;">
-                        Add new job
+                        <i class="fa fa-plus"></i> Add new job
                     </button>
                 </form>
             </div>
@@ -272,6 +273,7 @@
                         <td>
                             <div class="btn btn-primary bold">
                                 <strong>
+                                    <i class="fa fa-clock"></i>
                                     <?php echo isset($row['date']) ? $row['date'].' '.(isset($row['time']) ? $row['time'] : '') : 'N/A'; ?>
                                 </strong>
                             </div>
@@ -281,7 +283,9 @@
                         </td>
                         <td>
                             <?php if (isset($row['id'])) { ?>
-                            <a href="javascript:void(0);" class="job-delete btn btn-danger" data-route="delete.php?id=<?php echo $row['id']; ?><?php echo isset($_GET['view_history']) ? '&view_history' : ''; ?>">Delete</a>
+                            <a href="javascript:void(0);" class="job-delete btn btn-danger" data-route="delete.php?id=<?php echo $row['id']; ?><?php echo isset($_GET['view_history']) ? '&view_history' : ''; ?>">
+                                <i class="fa fa-trash-alt"></i> Delete
+                            </a>
                             <?php } ?>
                         </td>
                     </tr>
@@ -291,13 +295,13 @@
 
             <?php if (!isset($_GET['view_history'])) { ?>
                 <?php if ($jobTotal - $jobScheduled !== 0) { ?>
-                    <a href="index.php?view_history" class="btn btn-primary">
-                        View history (<?php echo $jobTotal - $jobScheduled; ?>)
+                    <a href="index.php?view_history" class="btn btn-info">
+                        <i class="fa fa-history"></i> View history <strong><?php echo $jobTotal - $jobScheduled; ?> job(s)</strong>
                     </a>
                 <?php } ?>
             <?php } else { ?>
                 <a href="index.php" class="btn btn-warning">
-                    Hide history
+                    <i class="fa fa-history"></i> Hide history
                 </a>
             <?php } ?>
 
