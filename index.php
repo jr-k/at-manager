@@ -3,7 +3,6 @@
     include 'config.php';
 
     $now = new \DateTime();
-    list($minHours, $minMinutes) = getNumericAppTriggerTime();
 
     $jobsIndex = [];
     $jobsRows = $jsonDb->select('*')->from(DB_TABLE_JOB)->order_by('date')->get();
@@ -81,6 +80,7 @@
         <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
         <link href="css/jquery-ui.min.css" rel="stylesheet" />
+        <link href="css/jquery.timepicker.min.css" rel="stylesheet" />
     </head>
     <body>
         <?php
@@ -147,7 +147,7 @@
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label>Time</label>
-                            <input type="text" name="time" class="form-control" autocomplete="off" value="<?php echo APP_TRIGGER_TIME; ?>" disabled="disabled" />
+                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_TRIGGER_TIME; ?>" disabled="disabled" />
                         </div>
                     </div>
 
@@ -230,8 +230,10 @@
         <script src="js/jquery.js"></script>
         <script src="js/jquery-ui.js"></script>
         <script src="js/jquery.inputmask.min.js"></script>
+        <script src="js/jquery.timepicker.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>
+            <?php list($minHours, $minMinutes) = explode(':', APP_TRIGGER_TIME); ?>
             jQuery(function($) {
                 var minDate = new Date();
                 minDate.setHours(<?php echo $minHours; ?>);
@@ -246,6 +248,13 @@
                 });
 
                 $('.datepicker').inputmask("9999-99-99",{ "placeholder": "_" });
+
+                $('.timepicker').timepicker({
+                    timeFormat: 'HH:mm',
+                    interval: 5,
+                });
+
+                $('.timepicker').inputmask("99:99",{ "placeholder": "_" });
 
                 $(document).on('click', '.job-delete', function() {
                     if (confirm('Are you sure to delete this planned push?')) {
