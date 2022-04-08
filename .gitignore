@@ -1,6 +1,6 @@
 .idea/
-db/*
-!db/.gitkeep
+database/*
+!database/.gitkeep
 jobs/*
 !jobs/.gitkeep
 !jobs/example.sh
