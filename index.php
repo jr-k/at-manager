@@ -103,6 +103,7 @@
     <head>
         <meta charset="UTF-8" />
         <title><?php echo APP_TITLE; ?></title>
+        <link rel="shortcut icon" href="favicon.ico">
         <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
         <link href="css/jquery-ui.min.css" rel="stylesheet" />
