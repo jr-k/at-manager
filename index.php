@@ -96,7 +96,7 @@
             $availableJobScripts = [];
 
             foreach (scandir(JOB_DIR) as $file) {
-                if ($file == '.' || $file === '..') continue;
+                if ($file[0] === '.') continue;
                 $name = str_replace('.sh', '', $file);
 
                 $availableJobScripts[] = [
