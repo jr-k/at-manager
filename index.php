@@ -47,8 +47,11 @@
                 continue;
             }
 
+            $atOutput = null;
             $cmd = sprintf('at %s %s -f %s 2>&1', $jobDate->format('H:i'), $jobDate->format('Y-m-d'), realpath($job));
             exec($cmd, $atOutput);
+
+            $match = null;
 
             foreach($atOutput as $output) {
                 if (preg_match('#job ([0-9]+) at(.+)#', $output, $match)) {
@@ -76,6 +79,7 @@
         <meta charset="UTF-8" />
         <title>Checkpoint Push Scheduler</title>
         <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
         <link href="css/jquery-ui.min.css" rel="stylesheet" />
     </head>
     <body>
@@ -140,6 +144,13 @@
                         </div>
                     </div>
 
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input type="text" name="time" class="form-control" autocomplete="off" value="<?php echo APP_TRIGGER_TIME; ?>" disabled="disabled" />
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-success" style="margin-top:24px;margin-left:24px;">
                         Confirm
                     </button>
@@ -154,6 +165,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>AT id</th>
                         <th>User</th>
                         <th>Job</th>
                         <th>Ref.</th>
@@ -173,7 +185,12 @@
                     <tr>
                         <td>
                             <div class="badge" style="font-size: 10px;">
-                                <?php echo isset($row['id']) ? $row['id'] : 'N/A';  echo isset($row['atId']) ? '/'.$row['atId'] : ''; ?>
+                                <?php echo isset($row['id']) ? $row['id'] : 'N/A'; ?>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="badge" style="font-size: 10px;">
+                                <?php echo isset($row['atId']) ? $row['atId'] : 'N/A'; ?>
                             </div>
                         </td>
                         <td>
