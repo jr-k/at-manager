@@ -39,10 +39,10 @@ class JSONDB
 
      const C_OR = 'OR';
 
-    public function __construct($dir, $json_encode_opt = null)
+    public function __construct($dir, $json_encode_opt = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
     {
         $this->dir = $dir;
-        $this->json_opts['encode'] = empty($json_encode_opt) ? (JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : $json_encode_opt;
+        $this->json_opts['encode'] = $json_encode_opt;
     }
 
     public function check_fp_size()
@@ -352,9 +352,15 @@ class JSONDB
         $return = false;
         if ($this->delete) {
             if (! empty($this->last_indexes) && ! empty($this->where)) {
-                $this->content = array_filter($this->content, function ($index) {
-                    return ! in_array($index, $this->last_indexes);
-                }, ARRAY_FILTER_USE_KEY);
+                $newContent = [];
+
+                foreach($this->content as $index => $row) {
+                    if (!in_array($index, $this->last_indexes)) {
+                        $newContent[$index] = $row;
+                    }
+                }
+
+                $this->content = $newContent;
 
                 $this->content = array_values($this->content);
             } elseif (empty($this->where) && empty($this->last_indexes)) {
@@ -422,17 +428,15 @@ class JSONDB
             return $this->where_and_result();
         }
         // Filter array
-        $r = array_filter($this->content, function ($row, $index) {
-            $row = (array) $row; // Convert first stage to array if object
+        $r = [];
 
+        foreach($this->content as $index => $row) {
             // Check for rows intersecting with the where values.
             if (array_uintersect_uassoc($row, $this->where, [$this, 'intersect_value_check'], 'strcasecmp') /*array_intersect_assoc( $row, $this->where )*/) {
                 $this->last_indexes[] = $index;
-                return true;
+                $r[$index] = $row;
             }
-
-            return false;
-        }, ARRAY_FILTER_USE_BOTH);
+        }
 
         // Make sure every  object is turned to array here.
         return array_values(obj_to_array($r));

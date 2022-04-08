@@ -289,7 +289,7 @@
                         <td>
                             <?php if (isset($row['id'])) { ?>
                             <a href="javascript:void(0);" class="job-delete btn btn-danger" data-route="delete.php?id=<?php echo $row['id']; ?><?php echo isset($_GET['view_history']) ? '&view_history' : ''; ?>">
-                                <i class="fa fa-trash-alt"></i> Delete
+                                <i class="fa fa-trash-alt"></i> <?php if ($pastJob) { ?>Purge<?php } else { ?>Delete<?php } ?>
                             </a>
                             <?php } ?>
                         </td>

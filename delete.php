@@ -23,6 +23,7 @@
                 ->from(DB_TABLE_JOB)
                 ->where(['id' => $job['id']])
                 ->trigger();
+
         }
     }
 
