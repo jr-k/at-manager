@@ -166,7 +166,7 @@
 
                     <div class="col-lg-2">
                         <div class="form-group">
-                            <label>Reference</label>
+                            <label>Comment</label>
                             <input type="text" name="comment" class="form-control" autocomplete="off" />
                         </div>
                     </div>
@@ -212,7 +212,7 @@
                         <th>App User</th>
                         <th>Sys User</th>
                         <th>Job</th>
-                        <th>Ref.</th>
+                        <th>Comment</th>
                         <th>Date</th>
                         <th>Action</th>
                     </tr>
