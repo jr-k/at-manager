@@ -2,6 +2,5 @@
 
 1. Installation
 ```bash
-make init
-nano config.php
+make init && nano config.php
 ```
