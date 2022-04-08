@@ -4,3 +4,6 @@
 ```bash
 make init && nano config.php
 ```
+
+#Preview
+![Preview](docs/preview.png)
