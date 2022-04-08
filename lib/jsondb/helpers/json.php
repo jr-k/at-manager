@@ -1,5 +1,5 @@
 <?php
-function get_json_chunk( $fp, int $start_depth = -1 ) {
+function get_json_chunk( $fp, $start_depth = -1 ) {
     $bufsz = 8192;
     $start = false;
     $quotes = [false, false];

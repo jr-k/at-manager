@@ -39,10 +39,10 @@ class JSONDB
 
      const C_OR = 'OR';
 
-    public function __construct($dir, $json_encode_opt = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+    public function __construct($dir, $json_encode_opt = null)
     {
         $this->dir = $dir;
-        $this->json_opts['encode'] = $json_encode_opt;
+        $this->json_opts['encode'] = empty($json_encode_opt) ? (JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : $json_encode_opt;
     }
 
     public function check_fp_size()
