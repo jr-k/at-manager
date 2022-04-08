@@ -1,8 +1,8 @@
 <?php
 
-include 'lib/jsondb/JSONDB.php';
+include_once 'lib/jsondb/JSONDB.php';
 
-const DB_DIR = __DIR__.DIRECTORY_SEPARATOR.'db';
+const DB_DIR = 'database';
 const DB_TABLE_JOB = 'jobs.json';
 
 if (!file_exists(DB_DIR.DIRECTORY_SEPARATOR.DB_TABLE_JOB)) {

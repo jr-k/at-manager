@@ -1,5 +1,5 @@
 <?php
-    include_once 'core.php';
+    include_once 'core/init.php';
 
     $job = $jsonDb->select('*')->from(DB_TABLE_JOB)->where(['id' => $_GET['id']])->getOne();
 
