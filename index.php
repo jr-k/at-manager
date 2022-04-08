@@ -38,13 +38,18 @@
                 'job' => $job,
                 'date' => $jobDate->format('Y-m-d'),
                 'comment' => $_POST['comment'],
-                'user' => $user
+                'appUser' => $user,
+                'sysUser' => '',
             ];
 
             if (array_key_exists(jKey($newJob), $jobsIndex)) {
                 $errors[] = sprintf('A push for %s is already planned !', $job);
                 continue;
             }
+
+            $sysUserOutput = null;
+            exec('whoami', $sysUserOutput);
+            $newJob['sysUser'] = $sysUserOutput[0];
 
             $atOutput = null;
             $cmd = sprintf('at %s %s -f %s 2>&1', $jobDate->format('H:i'), $jobDate->format('Y-m-d'), realpath($job));
@@ -166,7 +171,8 @@
                     <tr>
                         <th>ID</th>
                         <th>AT id</th>
-                        <th>User</th>
+                        <th>App User</th>
+                        <th>Sys User</th>
                         <th>Job</th>
                         <th>Ref.</th>
                         <th>Date</th>
@@ -194,7 +200,10 @@
                             </div>
                         </td>
                         <td>
-                            <?php echo isset($row['user']) ? $row['user'] : 'N/A'; ?>
+                            <?php echo isset($row['appUser']) ? $row['appUser'] : 'N/A'; ?>
+                        </td>
+                        <td>
+                            <?php echo isset($row['sysUser']) ? $row['sysUser'] : 'N/A'; ?>
                         </td>
                         <td>
                             <?php echo isset($row['job']) ? $row['job'] : 'N/A'; ?>
