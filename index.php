@@ -131,7 +131,7 @@
             <h1><strong><?php echo C_APP_TITLE; ?></strong></h1>
             <br />
 
-            <div class="row">
+            <div class="row jumbotron">
 
                 <?php if (!empty($errors)) { ?>
                     <div class="col-lg-12">
@@ -151,7 +151,7 @@
                         <div class="form-group">
                             <div style="display: flex; flex-direction: column">
                                 <label for="">
-                                    Jobs
+                                    Scripts
                                 </label>
                                 <?php foreach($availableJobScripts as $job) { ?>
                                     <div style="display: flex; flex-direction: row">
@@ -195,7 +195,7 @@
                     <?php } ?>
 
                     <button type="submit" class="btn btn-success" style="margin-top:24px;margin-left:24px;">
-                        Confirm
+                        Add new job
                     </button>
                 </form>
             </div>
