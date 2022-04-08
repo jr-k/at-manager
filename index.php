@@ -23,13 +23,15 @@
         $jobsIndex[jKey($row)] = $row;
     }
 
+    $customTimeEnabled = APP_CUSTOM_TIME_ENABLED && userCan(APP_ACL_TIME_EDIT);
+    $passwordEnabled = APP_PASSWORD_ENABLED && !userCan(APP_ACL_IGNORE_PASSWORD);
+
     $formTriggered = isset($_POST['jobs']);
 
-    $customTimeEnabled = APP_CUSTOM_TIME_ENABLED && userCan(APP_ACL_TIME_EDIT);
 
     $jobTime = $customTimeEnabled && isset($_POST['time']) ? $_POST['time'] : APP_DEFAULT_TRIGGER_TIME;
 
-    if ($formTriggered && APP_PASSWORD_ENABLED) {
+    if ($formTriggered && $passwordEnabled) {
         if (!isset($_POST['password']) || $_POST['password'] != APP_PASSWORD_VALUE) {
             $errors[] = 'Bad password';
         }
@@ -199,7 +201,7 @@
                         </div>
                     </div>
 
-                    <?php if (APP_PASSWORD_ENABLED) { ?>
+                    <?php if ($passwordEnabled) { ?>
                         <div class="col-lg-2">
                             <div class="form-group">
                                 <label>Password</label>
@@ -343,7 +345,7 @@
 
                 $(document).on('click', '.job-delete', function() {
                     if (confirm('Are you sure to delete this planned push?')) {
-                        <?php if (APP_PASSWORD_ENABLED) { ?>
+                        <?php if ($passwordEnabled) { ?>
                         var password = '';
                         if (password = prompt('Please, fill your password')) {
                             document.location.href = $(this).data('route')+'&password='+password;

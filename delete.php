@@ -3,7 +3,9 @@
 
     $error = null;
 
-    if (APP_PASSWORD_ENABLED) {
+    $passwordEnabled = APP_PASSWORD_ENABLED && !userCan(APP_ACL_IGNORE_PASSWORD);
+
+    if ($passwordEnabled) {
         if (!isset($_GET['password']) || $_GET['password'] != APP_PASSWORD_VALUE) {
             $error = 'bad_password';
         }
