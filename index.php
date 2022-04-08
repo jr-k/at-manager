@@ -1,6 +1,6 @@
 <?php
 
-    include 'config.php';
+    include_once 'core.php';
 
     $now = new \DateTime();
 
