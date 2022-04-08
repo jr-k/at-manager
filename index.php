@@ -191,13 +191,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($jobsRows as $row) { ?>
                     <?php
-                        $jobDate = \DateTime::createFromFormat('Y-m-d H:i', $row['date'].' '.$row['time']);
-                        $jobDateDiff = (int) $now->format('U') - (int) $jobDate->format('U');
-                        $pastJob = $jobDateDiff >= 0;
+                        $jobTotal = 0;
+                        $jobScheduled = 0;
 
-                        if ($pastJob && !isset($_GET['view_history'])) continue;
+                        foreach ($jobsRows as $row) {
+                            $jobDate = \DateTime::createFromFormat('Y-m-d H:i', $row['date'].' '.$row['time']);
+                            $jobDateDiff = (int) $now->format('U') - (int) $jobDate->format('U');
+                            $pastJob = $jobDateDiff >= 0;
+                            $jobTotal++;
+
+                            if ($pastJob && !isset($_GET['view_history'])) continue;
+
+                            $jobScheduled++;
                     ?>
                     <tr>
                         <td>
@@ -227,7 +233,7 @@
                         </td>
                         <td>
                             <?php if (isset($row['id'])) { ?>
-                            <a href="javascript:void(0);" class="job-delete btn btn-danger" data-route="delete.php?id=<?php echo $row['id']; ?>">Delete</a>
+                            <a href="javascript:void(0);" class="job-delete btn btn-danger" data-route="delete.php?id=<?php echo $row['id']; ?><?php echo isset($_GET['view_history']) ? '&view_history' : ''; ?>">Delete</a>
                             <?php } ?>
                         </td>
                     </tr>
@@ -236,9 +242,11 @@
             </table>
 
             <?php if (!isset($_GET['view_history'])) { ?>
-                <a href="index.php?view_history" class="btn btn-primary">
-                    View history
-                </a>
+                <?php if ($jobTotal - $jobScheduled !== 0) { ?>
+                    <a href="index.php?view_history" class="btn btn-primary">
+                        View history (<?php echo $jobTotal - $jobScheduled; ?>)
+                    </a>
+                <?php } ?>
             <?php } else { ?>
                 <a href="index.php" class="btn btn-warning">
                     Hide history

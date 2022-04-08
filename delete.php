@@ -14,5 +14,5 @@
             ->trigger();
     }
 
-    Header('Location:index.php');
+    Header('Location:index.php?'.(isset($_GET['view_history']) ? 'view_history' : ''));
 ?>
