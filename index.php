@@ -3,10 +3,11 @@
     include 'config.php';
 
     $now = new \DateTime();
+    list($minHours, $minMinutes) = getNumericAppTriggerTime();
 
     $jobsIndex = [];
     $jobsRows = $jsonDb->select('*')->from(DB_TABLE_JOB)->order_by('date')->get();
-    $alreadyInIndex = [];
+    $errors = [];
 
     function jKey($jobItem) {
         return $jobItem['date'].';'.$jobItem['job'];
@@ -16,34 +17,54 @@
         $jobsIndex[jKey($row)] = $row;
     }
 
-    if (isset($_POST['jobs'])) {
+    if (isset($_POST['date'])) {
+        $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.APP_TRIGGER_TIME.':00');
+
+        if ($jobDate === false) {
+            $errors[] = sprintf('Bad date format');
+        } elseif ((int)$now->format('U') >= (int)$jobDate->format('U')) {
+            $errors[] = 'Date is in the past, you must select a future date';
+        }
+    }
+
+    if (isset($_POST['jobs']) && empty($errors)) {
         foreach($_POST['jobs'] as $job) {
             $m = microtime(true);
             $id = sprintf("%8x%05x",floor($m),($m-floor($m))*1000000);
+            $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.APP_TRIGGER_TIME.':00');
 
             $newJob = [
                 'atId' => '',
                 'id' => $id,
                 'job' => $job,
-                'date' => $_POST['date'],
+                'date' => $jobDate->format('Y-m-d'),
                 'comment' => $_POST['comment'],
                 'user' => $user
             ];
 
-            $alreadyInIndex[$job] = array_key_exists(jKey($newJob), $jobsIndex);
-
-            if ($alreadyInIndex[$job]) {
+            if (array_key_exists(jKey($newJob), $jobsIndex)) {
+                $errors[] = sprintf('A push for %s is already planned !', $job);
                 continue;
             }
 
-            // AT + récupérer l'id
+            $cmd = sprintf('at %s %s -f %s 2>&1', $jobDate->format('H:i'), $jobDate->format('Y-m-d'), realpath($job));
+            exec($cmd, $atOutput);
+
+            foreach($atOutput as $output) {
+                if (preg_match('#job ([0-9]+) at(.+)#', $output, $match)) {
+                    if (isset($match[1])) {
+                        $newJob['atId'] = $match[1];
+                        break;
+                    }
+                }
+            }
 
             $jsonDb->insert(DB_TABLE_JOB, $newJob);
             $jobsRows[] = $newJob;
             $jobsIndex[jKey($newJob)] = $newJob;
         }
 
-        if (!empty($alreadyInIndex)) {
+        if (empty($errors)) {
             Header('Location:index.php');
         }
     }
@@ -82,10 +103,14 @@
 
             <div class="row">
 
-                <?php if ($alreadyInIndex) { ?>
+                <?php if (!empty($errors)) { ?>
                     <div class="col-lg-12">
                         <div class="alert alert-danger">
-                            <strong>This push is already planned !</strong>
+                            <ul>
+                                <?php foreach($errors as $error) { ?>
+                                    <li><strong><?php echo $error; ?></strong></li>
+                                <?php } ?>
+                            </ul>
                         </div>
                     </div>
                 <?php } ?>
@@ -148,7 +173,7 @@
                     <tr>
                         <td>
                             <div class="badge" style="font-size: 10px;">
-                                <?php echo isset($row['id']) ? $row['id'] : 'N/A'; ?>
+                                <?php echo isset($row['id']) ? $row['id'] : 'N/A';  echo isset($row['atId']) ? '/'.$row['atId'] : ''; ?>
                             </div>
                         </td>
                         <td>
@@ -191,7 +216,18 @@
         <script src="js/bootstrap.min.js"></script>
         <script>
             jQuery(function($) {
-                $('.datepicker').datepicker({dateFormat: 'yy-mm-dd'});
+                var minDate = new Date();
+                minDate.setHours(<?php echo $minHours; ?>);
+                minDate.setMinutes(<?php echo $minMinutes; ?>);
+
+                var tomorrowDate = new Date();
+                tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+
+                $('.datepicker').datepicker({
+                    dateFormat: 'yy-mm-dd',
+                    minDate: minDate >= new Date() ? minDate : tomorrowDate
+                });
+
                 $('.datepicker').inputmask("9999-99-99",{ "placeholder": "_" });
 
                 $(document).on('click', '.job-delete', function() {

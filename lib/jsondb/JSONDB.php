@@ -628,4 +628,15 @@ class JSONDB
         $this->flush_indexes(true);
         return $content;
     }
+
+    public function getOne()
+    {
+        $items = $this->get();
+
+        if (count($items) === 0) {
+            return null;
+        }
+
+        return $items[0];
+    }
 }
