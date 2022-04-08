@@ -3,8 +3,8 @@
 
     $error = null;
 
-    if (C_APP_PASSWORD_ENABLED) {
-        if (!isset($_GET['password']) || $_GET['password'] != C_APP_PASSWORD_VALUE) {
+    if (APP_PASSWORD_ENABLED) {
+        if (!isset($_GET['password']) || $_GET['password'] != APP_PASSWORD_VALUE) {
             $error = 'bad_password';
         }
     }

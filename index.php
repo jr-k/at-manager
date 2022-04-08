@@ -25,10 +25,10 @@
 
     $formTriggered = isset($_POST['jobs']);
 
-    $jobTime = C_APP_CUSTOM_TIME_ENABLED && isset($_POST['time']) ? $_POST['time'] : C_APP_DEFAULT_TRIGGER_TIME;
+    $jobTime = APP_CUSTOM_TIME_ENABLED && isset($_POST['time']) ? $_POST['time'] : APP_DEFAULT_TRIGGER_TIME;
 
-    if ($formTriggered && C_APP_PASSWORD_ENABLED) {
-        if (!isset($_POST['password']) || $_POST['password'] != C_APP_PASSWORD_VALUE) {
+    if ($formTriggered && APP_PASSWORD_ENABLED) {
+        if (!isset($_POST['password']) || $_POST['password'] != APP_PASSWORD_VALUE) {
             $errors[] = 'Bad password';
         }
     }
@@ -60,7 +60,8 @@
                 'date' => $jobDate->format('Y-m-d'),
                 'time' => $jobDate->format('H:i'),
                 'comment' => $_POST['comment'],
-                'appUser' => $user,
+                'createdAt' => $now->format('Y-m-d H:i:s'),
+                'appUser' => AUTH_USER,
                 'sysUser' => '',
             ];
 
@@ -100,7 +101,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title><?php echo C_APP_TITLE; ?></title>
+        <title><?php echo APP_TITLE; ?></title>
         <link rel="shortcut icon" href="favicon.ico">
         <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
@@ -126,7 +127,7 @@
 
         <div class="container">
 
-            <h1><strong><?php echo C_APP_TITLE; ?></strong></h1>
+            <h1><strong><?php echo APP_TITLE; ?></strong></h1>
             <br />
 
             <div class="row jumbotron" style="padding: 20px;">
@@ -191,11 +192,11 @@
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label>Time</label>
-                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo C_APP_DEFAULT_TRIGGER_TIME; ?>" <?php if (!C_APP_CUSTOM_TIME_ENABLED) { ?>disabled="disabled"<?php } ?> />
+                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_DEFAULT_TRIGGER_TIME; ?>" <?php if (!APP_CUSTOM_TIME_ENABLED) { ?>disabled="disabled"<?php } ?> />
                         </div>
                     </div>
 
-                    <?php if (C_APP_PASSWORD_ENABLED) { ?>
+                    <?php if (APP_PASSWORD_ENABLED) { ?>
                         <div class="col-lg-2">
                             <div class="form-group">
                                 <label>Password</label>
@@ -223,7 +224,8 @@
                         <th>Sys User</th>
                         <th>Script</th>
                         <th>Comment</th>
-                        <th>Date</th>
+                        <th>Execution at</th>
+                        <th>Created at</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -260,13 +262,22 @@
                             <?php echo isset($row['sysUser']) ? $row['sysUser'] : 'N/A'; ?>
                         </td>
                         <td>
-                            <?php echo isset($row['job']) ? $row['job'] : 'N/A'; ?>
+                            <div style="font-size: 12px;margin-top: 5px;">
+                                <?php echo isset($row['job']) ? $row['job'] : 'N/A'; ?>
+                            </div>
                         </td>
                         <td>
                             <?php echo isset($row['comment']) ? $row['comment'] : 'N/A'; ?>
                         </td>
                         <td>
-                            <?php echo isset($row['date']) ? $row['date'].' '.(isset($row['time']) ? $row['time'] : '') : 'N/A'; ?>
+                            <div class="btn btn-primary bold">
+                                <strong>
+                                    <?php echo isset($row['date']) ? $row['date'].' '.(isset($row['time']) ? $row['time'] : '') : 'N/A'; ?>
+                                </strong>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 10px;margin-top: 5px;"><?php echo isset($row['createdAt']) ? $row['createdAt'] : '' ?></div>
                         </td>
                         <td>
                             <?php if (isset($row['id'])) { ?>
@@ -298,7 +309,7 @@
         <script src="js/jquery.timepicker.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>
-            <?php list($minHours, $minMinutes) = explode(':', C_APP_DEFAULT_TRIGGER_TIME); ?>
+            <?php list($minHours, $minMinutes) = explode(':', APP_DEFAULT_TRIGGER_TIME); ?>
             jQuery(function($) {
                 var minDate = new Date();
                 minDate.setHours(<?php echo $minHours; ?>);
@@ -306,7 +317,7 @@
 
                 var tomorrowDate = new Date();
 
-                <?php if (!C_APP_CUSTOM_TIME_ENABLED) { ?>
+                <?php if (!APP_CUSTOM_TIME_ENABLED) { ?>
                 tomorrowDate.setDate(tomorrowDate.getDate() + 1);
                 <?php } ?>
 
@@ -326,7 +337,7 @@
 
                 $(document).on('click', '.job-delete', function() {
                     if (confirm('Are you sure to delete this planned push?')) {
-                        <?php if (C_APP_PASSWORD_ENABLED) { ?>
+                        <?php if (APP_PASSWORD_ENABLED) { ?>
                         var password = '';
                         if (password = prompt('Please, fill your password')) {
                             document.location.href = $(this).data('route')+'&password='+password;
