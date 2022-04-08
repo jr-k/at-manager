@@ -1,4 +1,6 @@
 .idea/
 db/*
 !db/.gitkeep
+jobs/*
+!jobs/.gitkeep
 config.php
