@@ -1,3 +1,3 @@
 init:
-	chmod -R 775 db
+	chmod -R 775 database
 	cp config.php.dist config.php
