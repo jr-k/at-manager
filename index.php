@@ -25,7 +25,9 @@
 
     $formTriggered = isset($_POST['jobs']);
 
-    $jobTime = APP_CUSTOM_TIME_ENABLED && isset($_POST['time']) ? $_POST['time'] : APP_DEFAULT_TRIGGER_TIME;
+    $customTimeEnabled = APP_CUSTOM_TIME_ENABLED && userCan(APP_ACL_TIME_EDIT);
+
+    $jobTime = $customTimeEnabled && isset($_POST['time']) ? $_POST['time'] : APP_DEFAULT_TRIGGER_TIME;
 
     if ($formTriggered && APP_PASSWORD_ENABLED) {
         if (!isset($_POST['password']) || $_POST['password'] != APP_PASSWORD_VALUE) {
@@ -193,7 +195,7 @@
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label>Time</label>
-                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_DEFAULT_TRIGGER_TIME; ?>" <?php if (!APP_CUSTOM_TIME_ENABLED) { ?>disabled="disabled"<?php } ?> />
+                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_DEFAULT_TRIGGER_TIME; ?>" <?php if (!$customTimeEnabled) { ?>disabled="disabled"<?php } ?> />
                         </div>
                     </div>
 
@@ -321,7 +323,7 @@
 
                 var tomorrowDate = new Date();
 
-                <?php if (!APP_CUSTOM_TIME_ENABLED) { ?>
+                <?php if (!$customTimeEnabled) { ?>
                 tomorrowDate.setDate(tomorrowDate.getDate() + 1);
                 <?php } ?>
 
