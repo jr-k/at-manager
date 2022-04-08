@@ -76,7 +76,7 @@
 
             $sysUserOutput = null;
             exec('whoami', $sysUserOutput);
-            $newJob['sysUser'] = $sysUserOutput[0];
+            $newJob['sysUser'] = utf8_decode($sysUserOutput[0]);
 
             $atOutput = null;
             $cmd = sprintf('at %s %s -f %s 2>&1', $jobDate->format('H:i'), $jobDate->format('Y-m-d'), realpath($job));
@@ -230,8 +230,8 @@
                         <th>Sys User</th>
                         <th>Script</th>
                         <th>Comment</th>
-                        <th>Execution at</th>
-                        <th>Created at</th>
+                        <th style="font-size:12px;">Execution date</th>
+                        <th style="font-size:12px;">Creation date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
