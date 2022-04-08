@@ -3,4 +3,5 @@ db/*
 !db/.gitkeep
 jobs/*
 !jobs/.gitkeep
+!jobs/example.sh
 config.php
