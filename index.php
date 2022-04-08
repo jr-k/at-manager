@@ -8,6 +8,12 @@
     $jobsRows = $jsonDb->select('*')->from(DB_TABLE_JOB)->order_by('date')->get();
     $errors = [];
 
+    if (isset($_GET['error'])) {
+        if ($_GET['error'] === 'bad_password') {
+            $errors[] = 'Bad password';
+        }
+    }
+
     function jKey($jobItem) {
         return $jobItem['date'].';'.$jobItem['time'].';'.$jobItem['job'];
     }
@@ -16,9 +22,21 @@
         $jobsIndex[jKey($row)] = $row;
     }
 
+    $formTriggered = isset($_POST['jobs']);
+
     $jobTime = APP_CUSTOM_TIME_ENABLED && isset($_POST['time']) ? $_POST['time'] : APP_DEFAULT_TRIGGER_TIME;
 
-    if (isset($_POST['date'])) {
+    if ($formTriggered && APP_PASSWORD_ENABLED) {
+        if (!isset($_POST['password']) || $_POST['password'] != APP_PASSWORD_VALUE) {
+            $errors[] = 'Bad password';
+        }
+    }
+
+    if (!$formTriggered && !empty($_POST) && empty($errors)) {
+        $errors[] = 'You must select at least one job';
+    }
+
+    if ($formTriggered && empty($errors) && isset($_POST['date'])) {
         $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.$jobTime.':00');
 
         if ($jobDate === false) {
@@ -28,7 +46,7 @@
         }
     }
 
-    if (isset($_POST['jobs']) && empty($errors)) {
+    if ($formTriggered && empty($errors)) {
         foreach($_POST['jobs'] as $job) {
             $m = microtime(true);
             $id = sprintf("%8x%05x",floor($m),($m-floor($m))*1000000);
@@ -92,17 +110,16 @@
     </head>
     <body>
         <?php
-            const JOB_DIR = 'jobs';
             $availableJobScripts = [];
 
-            foreach (scandir(JOB_DIR) as $file) {
+            foreach (scandir(DIR_JOBS) as $file) {
                 if ($file[0] === '.') continue;
                 $name = str_replace('.sh', '', $file);
 
                 $availableJobScripts[] = [
                     'name' => $name,
                     'label' => ucfirst($name),
-                    'file' => JOB_DIR.DIRECTORY_SEPARATOR.$file
+                    'file' => DIR_JOBS.DIRECTORY_SEPARATOR.$file
                 ];
             }
         ?>
@@ -166,6 +183,15 @@
                             <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_DEFAULT_TRIGGER_TIME; ?>" <?php if (!APP_CUSTOM_TIME_ENABLED) { ?>disabled="disabled"<?php } ?> />
                         </div>
                     </div>
+
+                    <?php if (APP_PASSWORD_ENABLED) { ?>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" name="password" class="form-control" autocomplete="off" />
+                            </div>
+                        </div>
+                    <?php } ?>
 
                     <button type="submit" class="btn btn-success" style="margin-top:24px;margin-left:24px;">
                         Confirm
@@ -289,9 +315,16 @@
 
                 $(document).on('click', '.job-delete', function() {
                     if (confirm('Are you sure to delete this planned push?')) {
+                        <?php if (APP_PASSWORD_ENABLED) { ?>
+                        var password = '';
+                        if (password = prompt('Please, fill your password')) {
+                            document.location.href = $(this).data('route')+'&password='+password;
+                        }
+                        <?php } else { ?>
                         if (confirm('Are you really sure?')) {
                             document.location.href = $(this).data('route');
                         }
+                        <?php } ?>
                     }
                 });
             });

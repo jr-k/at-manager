@@ -2,13 +2,10 @@
 
 include_once 'lib/jsondb/JSONDB.php';
 
-const DB_DIR = 'database';
-const DB_TABLE_JOB = 'jobs.json';
-
-if (!file_exists(DB_DIR.DIRECTORY_SEPARATOR.DB_TABLE_JOB)) {
-    file_put_contents(DB_DIR.DIRECTORY_SEPARATOR.DB_TABLE_JOB, '[]');
+if (!file_exists(DIR_DB.DIRECTORY_SEPARATOR.DB_TABLE_JOB)) {
+    file_put_contents(DIR_DB.DIRECTORY_SEPARATOR.DB_TABLE_JOB, '[]');
 }
 
-$jsonDb = new JSONDB(DB_DIR);
+$jsonDb = new JSONDB(DIR_DB);
 
 ?>

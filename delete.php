@@ -1,18 +1,31 @@
 <?php
     include_once 'core/init.php';
 
-    $job = $jsonDb->select('*')->from(DB_TABLE_JOB)->where(['id' => $_GET['id']])->getOne();
+    $error = null;
 
-    if (!empty($job)) {
-        if (!empty($job['atId'])) {
-            exec('atrm ' . $job['atId']);
+    if (APP_PASSWORD_ENABLED) {
+        if (!isset($_GET['password']) || $_GET['password'] != APP_PASSWORD_VALUE) {
+            $error = 'bad_password';
         }
-
-        $jsonDb->delete()
-            ->from( DB_TABLE_JOB )
-            ->where( [ 'id' => $job['id'] ] )
-            ->trigger();
     }
 
-    Header('Location:index.php?'.(isset($_GET['view_history']) ? 'view_history' : ''));
+    if (empty($error)) {
+        $job = $jsonDb->select('*')->from(DB_TABLE_JOB)->where(['id' => $_GET['id']])->getOne();
+
+        if (!empty($job)) {
+            if (!empty($job['atId'])) {
+                exec('atrm ' . $job['atId']);
+            }
+
+            $jsonDb->delete()
+                ->from(DB_TABLE_JOB)
+                ->where(['id' => $job['id']])
+                ->trigger();
+        }
+    }
+
+    Header('Location:index.php?'
+        .(isset($_GET['view_history']) ? '&view_history' : '')
+        .(!empty($error) ? '&error='.$error : '')
+    );
 ?>
