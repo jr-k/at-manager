@@ -128,15 +128,23 @@
                 <?php } ?>
 
                 <form method="post" class="">
-                    <?php foreach($availableJobScripts as $job) { ?>
-                        <div class="col-lg-2">
-                            <div class="form-group" style="margin-top:24px;">
-                                <input id="job_<?php echo $job['name']; ?>" type="checkbox" name="jobs[]" value="<?php echo $job['file']; ?>" />
-                                <label for="job_<?php echo $job['name']; ?>"><?php echo $job['label'] ?></label>
-                            </div>
-                        </div>
-                    <?php } ?>
 
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <div style="display: flex; flex-direction: column">
+                                <label for="">
+                                    Jobs
+                                </label>
+                                <?php foreach($availableJobScripts as $job) { ?>
+                                    <div style="display: flex; flex-direction: row">
+                                        <input id="job_<?php echo $job['name']; ?>" type="checkbox" name="jobs[]" value="<?php echo $job['file']; ?>" />
+                                        <label style="margin-left: 5px; font-weight: normal" for="job_<?php echo $job['name']; ?>"><?php echo $job['label'] ?></label>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
+                        </div>
+                    </div>
 
                     <div class="col-lg-2">
                         <div class="form-group">
