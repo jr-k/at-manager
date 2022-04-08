@@ -17,7 +17,7 @@
     }
 
     if (isset($_POST['date'])) {
-        $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.APP_TRIGGER_TIME.':00');
+        $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.APP_DEFAULT_TRIGGER_TIME.':00');
 
         if ($jobDate === false) {
             $errors[] = sprintf('Bad date format');
@@ -30,7 +30,7 @@
         foreach($_POST['jobs'] as $job) {
             $m = microtime(true);
             $id = sprintf("%8x%05x",floor($m),($m-floor($m))*1000000);
-            $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.APP_TRIGGER_TIME.':00');
+            $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.APP_DEFAULT_TRIGGER_TIME.':00');
 
             $newJob = [
                 'atId' => '',
@@ -81,7 +81,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Checkpoint Push Scheduler</title>
+        <title><?php echo APP_TITLE; ?></title>
         <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
         <link href="css/jquery-ui.min.css" rel="stylesheet" />
@@ -107,7 +107,7 @@
 
         <div class="container">
 
-            <h1><strong>Checkpoint Push Scheduler</strong></h1>
+            <h1><strong><?php echo APP_TITLE; ?></strong></h1>
             <br />
 
             <div class="row">
@@ -152,7 +152,7 @@
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label>Time</label>
-                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_TRIGGER_TIME; ?>" disabled="disabled" />
+                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_DEFAULT_TRIGGER_TIME; ?>" disabled="disabled" />
                         </div>
                     </div>
 
@@ -182,7 +182,7 @@
                 <tbody>
                     <?php foreach ($jobsRows as $row) { ?>
                     <?php
-                        $jobDate = \DateTime::createFromFormat('Y-m-d H:i', $row['date'].' '.APP_TRIGGER_TIME);
+                        $jobDate = \DateTime::createFromFormat('Y-m-d H:i', $row['date'].' '.APP_DEFAULT_TRIGGER_TIME);
                         $jobDateDiff = (int) $now->format('U') - (int) $jobDate->format('U');
                         $pastJob = $jobDateDiff >= 0;
 
@@ -212,7 +212,7 @@
                             <?php echo isset($row['comment']) ? $row['comment'] : 'N/A'; ?>
                         </td>
                         <td>
-                            <?php echo isset($row['date']) ? $row['date'].' '.APP_TRIGGER_TIME : 'N/A'; ?>
+                            <?php echo isset($row['date']) ? $row['date'].' '.APP_DEFAULT_TRIGGER_TIME : 'N/A'; ?>
                         </td>
                         <td>
                             <?php if (isset($row['id'])) { ?>
@@ -242,7 +242,7 @@
         <script src="js/jquery.timepicker.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>
-            <?php list($minHours, $minMinutes) = explode(':', APP_TRIGGER_TIME); ?>
+            <?php list($minHours, $minMinutes) = explode(':', APP_DEFAULT_TRIGGER_TIME); ?>
             jQuery(function($) {
                 var minDate = new Date();
                 minDate.setHours(<?php echo $minHours; ?>);
