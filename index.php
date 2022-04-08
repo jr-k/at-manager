@@ -211,7 +211,7 @@
                         <th>AT id</th>
                         <th>App User</th>
                         <th>Sys User</th>
-                        <th>Job</th>
+                        <th>Script</th>
                         <th>Comment</th>
                         <th>Date</th>
                         <th>Action</th>
