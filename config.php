@@ -4,6 +4,7 @@ include 'lib/jsondb/JSONDB.php';
 
 const APP_TITLE = 'Checkpoint Push Scheduler';
 const APP_DEFAULT_TRIGGER_TIME = '06:00';
+const APP_CUSTOM_TIME_ENABLED = true;
 
 const DB_DIR = __DIR__.DIRECTORY_SEPARATOR.'db';
 const DB_TABLE_JOB = 'jobs.json';

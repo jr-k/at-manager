@@ -9,15 +9,17 @@
     $errors = [];
 
     function jKey($jobItem) {
-        return $jobItem['date'].';'.$jobItem['job'];
+        return $jobItem['date'].';'.$jobItem['time'].';'.$jobItem['job'];
     }
 
     foreach($jobsRows as $row) {
         $jobsIndex[jKey($row)] = $row;
     }
 
+    $jobTime = APP_CUSTOM_TIME_ENABLED && isset($_POST['time']) ? $_POST['time'] : APP_DEFAULT_TRIGGER_TIME;
+
     if (isset($_POST['date'])) {
-        $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.APP_DEFAULT_TRIGGER_TIME.':00');
+        $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.$jobTime.':00');
 
         if ($jobDate === false) {
             $errors[] = sprintf('Bad date format');
@@ -30,13 +32,14 @@
         foreach($_POST['jobs'] as $job) {
             $m = microtime(true);
             $id = sprintf("%8x%05x",floor($m),($m-floor($m))*1000000);
-            $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.APP_DEFAULT_TRIGGER_TIME.':00');
+            $jobDate = \DateTime::createFromFormat('Y-m-d H:i:s', $_POST['date'].' '.$jobTime.':00');
 
             $newJob = [
                 'atId' => '',
                 'id' => $id,
                 'job' => $job,
                 'date' => $jobDate->format('Y-m-d'),
+                'time' => $jobDate->format('H:i'),
                 'comment' => $_POST['comment'],
                 'appUser' => $user,
                 'sysUser' => '',
@@ -152,7 +155,7 @@
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label>Time</label>
-                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_DEFAULT_TRIGGER_TIME; ?>" disabled="disabled" />
+                            <input type="text" name="time" class="timepicker form-control" autocomplete="off" value="<?php echo APP_DEFAULT_TRIGGER_TIME; ?>" <?php if (!APP_CUSTOM_TIME_ENABLED) { ?>disabled="disabled"<?php } ?> />
                         </div>
                     </div>
 
@@ -182,7 +185,7 @@
                 <tbody>
                     <?php foreach ($jobsRows as $row) { ?>
                     <?php
-                        $jobDate = \DateTime::createFromFormat('Y-m-d H:i', $row['date'].' '.APP_DEFAULT_TRIGGER_TIME);
+                        $jobDate = \DateTime::createFromFormat('Y-m-d H:i', $row['date'].' '.$row['time']);
                         $jobDateDiff = (int) $now->format('U') - (int) $jobDate->format('U');
                         $pastJob = $jobDateDiff >= 0;
 
@@ -212,7 +215,7 @@
                             <?php echo isset($row['comment']) ? $row['comment'] : 'N/A'; ?>
                         </td>
                         <td>
-                            <?php echo isset($row['date']) ? $row['date'].' '.APP_DEFAULT_TRIGGER_TIME : 'N/A'; ?>
+                            <?php echo isset($row['date']) ? $row['date'].' '.(isset($row['time']) ? $row['time'] : '') : 'N/A'; ?>
                         </td>
                         <td>
                             <?php if (isset($row['id'])) { ?>
@@ -249,7 +252,10 @@
                 minDate.setMinutes(<?php echo $minMinutes; ?>);
 
                 var tomorrowDate = new Date();
+
+                <?php if (!APP_CUSTOM_TIME_ENABLED) { ?>
                 tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+                <?php } ?>
 
                 $('.datepicker').datepicker({
                     dateFormat: 'yy-mm-dd',
@@ -260,7 +266,7 @@
 
                 $('.timepicker').timepicker({
                     timeFormat: 'HH:mm',
-                    interval: 5,
+                    interval: 10
                 });
 
                 $('.timepicker').inputmask("99:99",{ "placeholder": "_" });
