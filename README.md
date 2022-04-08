@@ -5,5 +5,5 @@
 make init && nano config.php
 ```
 
-#Preview
+# Preview
 ![Preview](docs/preview.png)
