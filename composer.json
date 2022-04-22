@@ -1,0 +1,15 @@
+{
+    "name": "jr-k/at-manager",
+    "description": "GUI on top of AT",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "jr-k",
+            "email": "jrk@jierka.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"
+    }
+}
