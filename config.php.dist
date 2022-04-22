@@ -1,5 +1,6 @@
 <?php
 
+const APP_TIMEZONE = 'Europe/Paris';
 const APP_TITLE = 'AT Manager';
 const APP_DEFAULT_TRIGGER_TIME = '06:00';
 const APP_CUSTOM_TIME_ENABLED = true;

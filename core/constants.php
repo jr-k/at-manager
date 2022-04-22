@@ -19,6 +19,7 @@ const APP_ACL_TIME_EDIT = 'APP_ACL_TIME_EDIT';
 const APP_ACL_IGNORE_PASSWORD = 'APP_ACL_IGNORE_PASSWORD';
 
 // Customizable constants
+defined('APP_TIMEZONE') or define('APP_TIMEZONE', 'Europe/Paris');
 defined('APP_TITLE') or define('APP_TITLE', 'AT Manager');
 defined('APP_DEFAULT_TRIGGER_TIME') or define('APP_DEFAULT_TRIGGER_TIME', '06:00');
 defined('APP_CUSTOM_TIME_ENABLED') or define('APP_CUSTOM_TIME_ENABLED', false);
