@@ -1,5 +1,9 @@
 # AT MANAGER
 
+0. About
+
+This is a small GUI on top of `at`.
+
 1. Installation
 ```bash
 make init && nano config.php
